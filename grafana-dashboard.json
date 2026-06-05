@@ -1,0 +1,427 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": null,
+    "title": "Home Assistant",
+    "tags": ["home-assistant"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 0,
+    "refresh": "1m",
+    "panels": [
+      {
+        "id": 1,
+        "type": "row",
+        "title": "Temperatures",
+        "collapsed": false,
+        "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "type": "timeseries",
+        "title": "Room Temperatures Over Time",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 1},
+        "datasource": {"type": "prometheus", "uid": "ffmxjqyleyxhce"},
+        "targets": [
+          {
+            "expr": "hass_climate_current_temperature_celsius",
+            "legendFormat": "{{friendly_name}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "celsius",
+            "color": {"mode": "palette-classic"},
+            "custom": {"lineWidth": 2, "fillOpacity": 10}
+          }
+        },
+        "options": {
+          "tooltip": {"mode": "multi", "sort": "none"},
+          "legend": {"displayMode": "list", "placement": "bottom"}
+        }
+      },
+      {
+        "id": 3,
+        "type": "stat",
+        "title": "AC Escritório — Temp",
+        "gridPos": {"h": 4, "w": 8, "x": 0, "y": 9},
+        "datasource": {"type": "prometheus", "uid": "ffmxjqyleyxhce"},
+        "targets": [
+          {
+            "expr": "hass_climate_current_temperature_celsius{entity=\"climate.ac_escritorio\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "celsius",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "blue", "value": null},
+                {"color": "green", "value": 20},
+                {"color": "yellow", "value": 25},
+                {"color": "red", "value": 28}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"]},
+          "graphMode": "area",
+          "colorMode": "background",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 4,
+        "type": "stat",
+        "title": "AC Sala — Temp",
+        "gridPos": {"h": 4, "w": 8, "x": 8, "y": 9},
+        "datasource": {"type": "prometheus", "uid": "ffmxjqyleyxhce"},
+        "targets": [
+          {
+            "expr": "hass_climate_current_temperature_celsius{entity=\"climate.ac_sala\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "celsius",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "blue", "value": null},
+                {"color": "green", "value": 20},
+                {"color": "yellow", "value": 25},
+                {"color": "red", "value": 28}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"]},
+          "graphMode": "area",
+          "colorMode": "background",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 5,
+        "type": "stat",
+        "title": "AC Quarto — Temp",
+        "gridPos": {"h": 4, "w": 8, "x": 16, "y": 9},
+        "datasource": {"type": "prometheus", "uid": "ffmxjqyleyxhce"},
+        "targets": [
+          {
+            "expr": "hass_climate_current_temperature_celsius{entity=\"climate.ac_quarto\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "celsius",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "blue", "value": null},
+                {"color": "green", "value": 20},
+                {"color": "yellow", "value": 25},
+                {"color": "red", "value": 28}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"]},
+          "graphMode": "area",
+          "colorMode": "background",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 6,
+        "type": "row",
+        "title": "AC Status",
+        "collapsed": false,
+        "gridPos": {"h": 1, "w": 24, "x": 0, "y": 13}
+      },
+      {
+        "id": 7,
+        "type": "stat",
+        "title": "AC Escritório — Status",
+        "gridPos": {"h": 4, "w": 8, "x": 0, "y": 14},
+        "datasource": {"type": "prometheus", "uid": "ffmxjqyleyxhce"},
+        "targets": [
+          {
+            "expr": "1 - hass_climate_mode{entity=\"climate.ac_escritorio\", mode=\"off\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "type": "value",
+                "options": {
+                  "0": {"text": "OFF", "color": "red", "index": 0},
+                  "1": {"text": "ON", "color": "green", "index": 1}
+                }
+              }
+            ],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "green", "value": 1}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"]},
+          "graphMode": "none",
+          "colorMode": "background",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 8,
+        "type": "stat",
+        "title": "AC Sala — Status",
+        "gridPos": {"h": 4, "w": 8, "x": 8, "y": 14},
+        "datasource": {"type": "prometheus", "uid": "ffmxjqyleyxhce"},
+        "targets": [
+          {
+            "expr": "1 - hass_climate_mode{entity=\"climate.ac_sala\", mode=\"off\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "type": "value",
+                "options": {
+                  "0": {"text": "OFF", "color": "red", "index": 0},
+                  "1": {"text": "ON", "color": "green", "index": 1}
+                }
+              }
+            ],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "green", "value": 1}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"]},
+          "graphMode": "none",
+          "colorMode": "background",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 9,
+        "type": "stat",
+        "title": "AC Quarto — Status",
+        "gridPos": {"h": 4, "w": 8, "x": 16, "y": 14},
+        "datasource": {"type": "prometheus", "uid": "ffmxjqyleyxhce"},
+        "targets": [
+          {
+            "expr": "1 - hass_climate_mode{entity=\"climate.ac_quarto\", mode=\"off\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "type": "value",
+                "options": {
+                  "0": {"text": "OFF", "color": "red", "index": 0},
+                  "1": {"text": "ON", "color": "green", "index": 1}
+                }
+              }
+            ],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "green", "value": 1}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"]},
+          "graphMode": "none",
+          "colorMode": "background",
+          "textMode": "auto"
+        }
+      },
+      {
+        "id": 10,
+        "type": "row",
+        "title": "Lights",
+        "collapsed": false,
+        "gridPos": {"h": 1, "w": 24, "x": 0, "y": 18}
+      },
+      {
+        "id": 11,
+        "type": "gauge",
+        "title": "Luz Sala",
+        "gridPos": {"h": 6, "w": 8, "x": 0, "y": 19},
+        "datasource": {"type": "prometheus", "uid": "ffmxjqyleyxhce"},
+        "targets": [
+          {
+            "expr": "hass_light_brightness_percent{entity=\"light.h6076\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "dark-gray", "value": null},
+                {"color": "yellow", "value": 1},
+                {"color": "green", "value": 50}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"]},
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        }
+      },
+      {
+        "id": 12,
+        "type": "gauge",
+        "title": "Luz Escritorio Esquerda",
+        "gridPos": {"h": 6, "w": 8, "x": 8, "y": 19},
+        "datasource": {"type": "prometheus", "uid": "ffmxjqyleyxhce"},
+        "targets": [
+          {
+            "expr": "hass_light_brightness_percent{entity=\"light.h6076_2\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "dark-gray", "value": null},
+                {"color": "yellow", "value": 1},
+                {"color": "green", "value": 50}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"]},
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        }
+      },
+      {
+        "id": 13,
+        "type": "gauge",
+        "title": "Luz Escritorio Direita",
+        "gridPos": {"h": 6, "w": 8, "x": 16, "y": 19},
+        "datasource": {"type": "prometheus", "uid": "ffmxjqyleyxhce"},
+        "targets": [
+          {
+            "expr": "hass_light_brightness_percent{entity=\"light.h6076_3\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "dark-gray", "value": null},
+                {"color": "yellow", "value": 1},
+                {"color": "green", "value": 50}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"]},
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        }
+      },
+      {
+        "id": 14,
+        "type": "row",
+        "title": "Devices",
+        "collapsed": false,
+        "gridPos": {"h": 1, "w": 24, "x": 0, "y": 25}
+      },
+      {
+        "id": 15,
+        "type": "gauge",
+        "title": "Rubens's iPhone Battery",
+        "gridPos": {"h": 6, "w": 8, "x": 0, "y": 26},
+        "datasource": {"type": "prometheus", "uid": "ffmxjqyleyxhce"},
+        "targets": [
+          {
+            "expr": "hass_sensor_battery_percent{entity=\"sensor.rubenss_iphone_battery_level\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 20},
+                {"color": "green", "value": 50}
+              ]
+            }
+          }
+        },
+        "options": {
+          "reduceOptions": {"calcs": ["lastNotNull"]},
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        }
+      }
+    ]
+  },
+  "folderId": 0,
+  "overwrite": true
+}

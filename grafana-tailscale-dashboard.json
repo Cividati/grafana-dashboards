@@ -1,0 +1,239 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "tailscale-health",
+    "title": "Tailscale Health",
+    "tags": ["tailscale", "network", "vpn"],
+    "timezone": "browser",
+    "schemaVersion": 39,
+    "version": 1,
+    "refresh": "15s",
+    "time": { "from": "now-3h", "to": "now" },
+    "panels": [
+
+      { "id": 1, "type": "row", "title": "Status", "gridPos": {"h":1,"w":24,"x":0,"y":0}, "collapsed": false },
+
+      {
+        "id": 2, "type": "stat", "title": "Node Online",
+        "gridPos": {"h":4,"w":4,"x":0,"y":1},
+        "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none", "textMode": "auto" },
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [{"type":"value","options":{"0":{"text":"Offline","color":"red"},"1":{"text":"Online","color":"green"}}}],
+            "thresholds": {"mode":"absolute","steps":[{"value":null,"color":"red"},{"value":1,"color":"green"}]},
+            "color": {"mode":"thresholds"}
+          }
+        },
+        "targets": [{"expr": "tailscale_node_online", "legendFormat": "", "datasource": {"type":"prometheus","uid":"prometheus"}}]
+      },
+
+      {
+        "id": 3, "type": "stat", "title": "Peers Online",
+        "gridPos": {"h":4,"w":4,"x":4,"y":1},
+        "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none", "textMode": "auto" },
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {"mode":"absolute","steps":[{"value":null,"color":"blue"},{"value":1,"color":"green"}]},
+            "color": {"mode":"thresholds"}
+          }
+        },
+        "targets": [{"expr": "tailscale_peers_online", "legendFormat": "Online", "datasource": {"type":"prometheus","uid":"prometheus"}}]
+      },
+
+      {
+        "id": 4, "type": "stat", "title": "Total Peers",
+        "gridPos": {"h":4,"w":4,"x":8,"y":1},
+        "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {"mode":"absolute","steps":[{"value":null,"color":"blue"}]},
+            "color": {"mode":"thresholds"}
+          }
+        },
+        "targets": [{"expr": "magicsock_netmap_num_peers", "legendFormat": "Peers", "datasource": {"type":"prometheus","uid":"prometheus"}}]
+      },
+
+      {
+        "id": 5, "type": "stat", "title": "Exit Node",
+        "gridPos": {"h":4,"w":4,"x":12,"y":1},
+        "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background", "graphMode": "none", "textMode": "auto" },
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [{"type":"value","options":{"0":{"text":"Inactive","color":"blue"},"1":{"text":"Active","color":"orange"}}}],
+            "thresholds": {"mode":"absolute","steps":[{"value":null,"color":"blue"},{"value":1,"color":"orange"}]},
+            "color": {"mode":"thresholds"}
+          }
+        },
+        "targets": [{"expr": "tailscale_exit_node_active", "legendFormat": "", "datasource": {"type":"prometheus","uid":"prometheus"}}]
+      },
+
+      {
+        "id": 6, "type": "stat", "title": "Traffic In (total)",
+        "gridPos": {"h":4,"w":4,"x":16,"y":1},
+        "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bytes",
+            "thresholds": {"mode":"absolute","steps":[{"value":null,"color":"blue"}]},
+            "color": {"mode":"thresholds"}
+          }
+        },
+        "targets": [{"expr": "node_network_receive_bytes_total{device=\"tailscale0\"}", "legendFormat": "Received", "datasource": {"type":"prometheus","uid":"prometheus"}}]
+      },
+
+      {
+        "id": 7, "type": "stat", "title": "Traffic Out (total)",
+        "gridPos": {"h":4,"w":4,"x":20,"y":1},
+        "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bytes",
+            "thresholds": {"mode":"absolute","steps":[{"value":null,"color":"purple"}]},
+            "color": {"mode":"thresholds"}
+          }
+        },
+        "targets": [{"expr": "node_network_transmit_bytes_total{device=\"tailscale0\"}", "legendFormat": "Sent", "datasource": {"type":"prometheus","uid":"prometheus"}}]
+      },
+
+      { "id": 10, "type": "row", "title": "Network Traffic", "gridPos": {"h":1,"w":24,"x":0,"y":5}, "collapsed": false },
+
+      {
+        "id": 11, "type": "timeseries", "title": "Tailscale Bandwidth",
+        "gridPos": {"h":8,"w":12,"x":0,"y":6},
+        "options": { "legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"} },
+        "fieldConfig": {
+          "defaults": { "unit": "Bps", "custom": {"lineWidth": 2, "fillOpacity": 10} },
+          "overrides": [
+            {"matcher":{"id":"byName","options":"Inbound"},"properties":[{"id":"color","value":{"fixedColor":"blue","mode":"fixed"}}]},
+            {"matcher":{"id":"byName","options":"Outbound"},"properties":[{"id":"color","value":{"fixedColor":"orange","mode":"fixed"}}]}
+          ]
+        },
+        "targets": [
+          {"expr": "rate(node_network_receive_bytes_total{device=\"tailscale0\"}[1m])", "legendFormat": "Inbound", "datasource": {"type":"prometheus","uid":"prometheus"}},
+          {"expr": "rate(node_network_transmit_bytes_total{device=\"tailscale0\"}[1m])", "legendFormat": "Outbound", "datasource": {"type":"prometheus","uid":"prometheus"}}
+        ]
+      },
+
+      {
+        "id": 12, "type": "timeseries", "title": "Packets per Second",
+        "gridPos": {"h":8,"w":12,"x":12,"y":6},
+        "options": { "legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"} },
+        "fieldConfig": {
+          "defaults": { "unit": "pps", "custom": {"lineWidth": 2, "fillOpacity": 10} },
+          "overrides": [
+            {"matcher":{"id":"byName","options":"Recv packets"},"properties":[{"id":"color","value":{"fixedColor":"green","mode":"fixed"}}]},
+            {"matcher":{"id":"byName","options":"Sent packets"},"properties":[{"id":"color","value":{"fixedColor":"yellow","mode":"fixed"}}]}
+          ]
+        },
+        "targets": [
+          {"expr": "rate(node_network_receive_packets_total{device=\"tailscale0\"}[1m])", "legendFormat": "Recv packets", "datasource": {"type":"prometheus","uid":"prometheus"}},
+          {"expr": "rate(node_network_transmit_packets_total{device=\"tailscale0\"}[1m])", "legendFormat": "Sent packets", "datasource": {"type":"prometheus","uid":"prometheus"}}
+        ]
+      },
+
+      { "id": 20, "type": "row", "title": "Connection Quality — Direct vs DERP Relay", "gridPos": {"h":1,"w":24,"x":0,"y":14}, "collapsed": false },
+
+      {
+        "id": 21, "type": "timeseries", "title": "Receive Path — Direct (P2P) vs DERP Relay",
+        "description": "Direct traffic = P2P (good). DERP = routed via relay (NAT traversal failed).",
+        "gridPos": {"h":8,"w":12,"x":0,"y":15},
+        "options": { "legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"} },
+        "fieldConfig": {
+          "defaults": { "unit": "Bps", "custom": {"lineWidth": 2, "fillOpacity": 15, "stacking": {"mode": "none"}} },
+          "overrides": [
+            {"matcher":{"id":"byName","options":"Direct (IPv4+IPv6)"},"properties":[{"id":"color","value":{"fixedColor":"green","mode":"fixed"}}]},
+            {"matcher":{"id":"byName","options":"DERP Relay"},"properties":[{"id":"color","value":{"fixedColor":"red","mode":"fixed"}}]}
+          ]
+        },
+        "targets": [
+          {"expr": "rate(magicsock_recv_data_bytes_ipv4[1m]) + rate(magicsock_recv_data_bytes_ipv6[1m])", "legendFormat": "Direct (IPv4+IPv6)", "datasource": {"type":"prometheus","uid":"prometheus"}},
+          {"expr": "rate(magicsock_recv_data_bytes_derp[1m])", "legendFormat": "DERP Relay", "datasource": {"type":"prometheus","uid":"prometheus"}}
+        ]
+      },
+
+      {
+        "id": 22, "type": "timeseries", "title": "Send Path — Direct (P2P) vs DERP Relay",
+        "description": "Direct traffic = P2P (good). DERP = routed via relay (NAT traversal failed).",
+        "gridPos": {"h":8,"w":12,"x":12,"y":15},
+        "options": { "legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"} },
+        "fieldConfig": {
+          "defaults": { "unit": "Bps", "custom": {"lineWidth": 2, "fillOpacity": 15} },
+          "overrides": [
+            {"matcher":{"id":"byName","options":"Direct (IPv4+IPv6)"},"properties":[{"id":"color","value":{"fixedColor":"green","mode":"fixed"}}]},
+            {"matcher":{"id":"byName","options":"DERP Relay"},"properties":[{"id":"color","value":{"fixedColor":"red","mode":"fixed"}}]}
+          ]
+        },
+        "targets": [
+          {"expr": "rate(magicsock_send_data_bytes_ipv4[1m]) + rate(magicsock_send_data_bytes_ipv6[1m])", "legendFormat": "Direct (IPv4+IPv6)", "datasource": {"type":"prometheus","uid":"prometheus"}},
+          {"expr": "rate(magicsock_send_data_bytes_derp[1m])", "legendFormat": "DERP Relay", "datasource": {"type":"prometheus","uid":"prometheus"}}
+        ]
+      },
+
+      { "id": 30, "type": "row", "title": "DNS Health (Pi-hole via Tailscale)", "gridPos": {"h":1,"w":24,"x":0,"y":23}, "collapsed": false },
+
+      {
+        "id": 31, "type": "timeseries", "title": "DNS Queries Forwarded via Tailscale",
+        "gridPos": {"h":7,"w":12,"x":0,"y":24},
+        "options": { "legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"} },
+        "fieldConfig": {
+          "defaults": { "unit": "reqps", "custom": {"lineWidth": 2, "fillOpacity": 10} }
+        },
+        "targets": [
+          {"expr": "rate(dns_query_fwd[1m])", "legendFormat": "Total queries", "datasource": {"type":"prometheus","uid":"prometheus"}},
+          {"expr": "rate(dns_query_fwd_success[1m])", "legendFormat": "Successful", "datasource": {"type":"prometheus","uid":"prometheus"}}
+        ]
+      },
+
+      {
+        "id": 32, "type": "timeseries", "title": "DNS Query Errors",
+        "gridPos": {"h":7,"w":12,"x":12,"y":24},
+        "options": { "legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"} },
+        "fieldConfig": {
+          "defaults": { "unit": "reqps", "custom": {"lineWidth": 2, "fillOpacity": 10} },
+          "overrides": [{"matcher":{"id":"byRegexp","options":".*"},"properties":[{"id":"color","value":{"fixedColor":"red","mode":"fixed"}}]}]
+        },
+        "targets": [
+          {"expr": "rate(dns_query_fwd_error_context[1m])", "legendFormat": "Context error", "datasource": {"type":"prometheus","uid":"prometheus"}},
+          {"expr": "rate(dns_query_fwd_error_name[1m])", "legendFormat": "Name error", "datasource": {"type":"prometheus","uid":"prometheus"}},
+          {"expr": "rate(dns_query_fwd_error_no_upstream[1m])", "legendFormat": "No upstream", "datasource": {"type":"prometheus","uid":"prometheus"}}
+        ]
+      },
+
+      { "id": 40, "type": "row", "title": "Peers", "gridPos": {"h":1,"w":24,"x":0,"y":31}, "collapsed": false },
+
+      {
+        "id": 41, "type": "timeseries", "title": "Peers Over Time",
+        "gridPos": {"h":7,"w":12,"x":0,"y":32},
+        "options": { "legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"} },
+        "fieldConfig": {
+          "defaults": { "unit": "short", "custom": {"lineWidth": 2, "fillOpacity": 20}, "min": 0 },
+          "overrides": [
+            {"matcher":{"id":"byName","options":"Online"},"properties":[{"id":"color","value":{"fixedColor":"green","mode":"fixed"}}]},
+            {"matcher":{"id":"byName","options":"Total"},"properties":[{"id":"color","value":{"fixedColor":"blue","mode":"fixed"}}]}
+          ]
+        },
+        "targets": [
+          {"expr": "tailscale_peers_online", "legendFormat": "Online", "datasource": {"type":"prometheus","uid":"prometheus"}},
+          {"expr": "tailscale_peers_total", "legendFormat": "Total", "datasource": {"type":"prometheus","uid":"prometheus"}}
+        ]
+      },
+
+      {
+        "id": 42, "type": "timeseries", "title": "DERP Relay Changes (Home Region)",
+        "description": "Counts how often Tailscale changes its relay server. Ideally stays 0.",
+        "gridPos": {"h":7,"w":12,"x":12,"y":32},
+        "options": { "legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "multi"} },
+        "fieldConfig": {
+          "defaults": { "unit": "short", "custom": {"lineWidth": 2, "fillOpacity": 10} }
+        },
+        "targets": [
+          {"expr": "rate(derp_home_change[5m])", "legendFormat": "DERP Region Changes", "datasource": {"type":"prometheus","uid":"prometheus"}},
+          {"expr": "rate(derp_home_fallback[5m])", "legendFormat": "DERP Fallbacks", "datasource": {"type":"prometheus","uid":"prometheus"}}
+        ]
+      }
+
+    ]
+  },
+  "overwrite": true,
+  "folderId": 0
+}
